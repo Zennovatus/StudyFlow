@@ -1,50 +1,38 @@
-export default function TaskCard({ task, onUpdate }) {
+export default function TaskCard({ task, onUpdate, onEdit, onDelete }) {
   return (
-    <article className={`task-card ${task.completed ? "is-complete" : ""}`}>
-      <div className="task-card-top">
-        <div>
-          <h3>{task.title}</h3>
-          <p className="task-meta">
-            {task.subject} • {task.category} • {task.estimateHours}h
-          </p>
-        </div>
-        <span className={`priority-badge priority-${task.priority}`}>
-          {task.priority}
-        </span>
+    <div className="task-card">
+      <div className="task-header">
+        <h3>{task.title}</h3>
       </div>
 
-      <p className="task-notes">{task.notes || "No notes added."}</p>
+      <div className="task-body">
+        <p>{task.subject}</p>
+        <p>{task.notes}</p>
+      </div>
 
-      <div className="task-card-bottom">
-        <div className="task-status">
-          <span>{task.dueDate ? `Due ${task.dueDate}` : "No due date"}</span>
-          <span>{task.status}</span>
-        </div>
-
+      <div className="task-actions">
         {onUpdate && (
-          <div className="task-actions">
-            <label className="checkbox-inline">
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={(e) =>
-                  onUpdate(task.id, { completed: e.target.checked })
-                }
-              />
-              Done
-            </label>
-
-            <select
-              value={task.priority}
-              onChange={(e) => onUpdate(task.id, { priority: e.target.value })}
-            >
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
-          </div>
+          <select
+            value={task.status}
+            onChange={(e) =>
+              onUpdate(task.id, { status: e.target.value })
+            }
+          >
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Blocked</option>
+            <option>Done</option>
+          </select>
         )}
+
+        <button className="btn-secondary" onClick={onEdit}>
+          Edit
+        </button>
+
+        <button className="btn-danger" onClick={onDelete}>
+          Delete
+        </button>
       </div>
-    </article>
+    </div>
   );
 }
