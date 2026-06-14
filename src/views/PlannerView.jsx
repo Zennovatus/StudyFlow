@@ -5,13 +5,16 @@ export default function PlannerView({
   onUpdate,
   onRebalance,
   search,
-  setSearch
+  setSearch,
+  onEditTask,
+  onDeleteTask
 }) {
   return (
     <div className="view-stack">
       <section className="panel">
         <div className="panel-header">
           <h2>Planner</h2>
+
           <div className="inline-actions">
             <input
               className="search-input"
@@ -19,7 +22,12 @@ export default function PlannerView({
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search tasks, subjects, notes..."
             />
-            <button className="primary-btn" onClick={onRebalance} type="button">
+
+            <button
+              className="primary-btn"
+              onClick={onRebalance}
+              type="button"
+            >
               Rebalance
             </button>
           </div>
@@ -30,7 +38,13 @@ export default function PlannerView({
         ) : (
           <div className="view-stack">
             {tasks.map((task) => (
-              <TaskCard key={task.id} task={task} onUpdate={onUpdate} />
+              <TaskCard
+                key={task.id}
+                task={task}
+                onUpdate={onUpdate}
+                onEdit={() => onEditTask(task)}
+                onDelete={() => onDeleteTask(task)}
+              />
             ))}
           </div>
         )}
