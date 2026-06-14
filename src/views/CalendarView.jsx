@@ -5,7 +5,8 @@ export default function CalendarView({
   month,
   setMonth,
   onEditTask,
-  onDeleteTask
+  onDeleteTask,
+  onUpdate
 }) {
   return (
     <div className="view-stack">
@@ -15,6 +16,7 @@ export default function CalendarView({
         setMonth={setMonth}
         onEditTask={onEditTask}
         onDeleteTask={onDeleteTask}
+        onTaskDrop={(taskId, newDate) => onUpdate(taskId, { dueDate: newDate })}
       />
     </div>
   );
