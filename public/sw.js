@@ -1,4 +1,4 @@
-const CACHE_NAME = "studyflow-lite-v1";
+const CACHE_NAME = "studyflow-v1";
 const APP_SHELL = ["/StudyFlow/"];
 
 self.addEventListener("install", (e) => {
