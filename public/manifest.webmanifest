@@ -1,15 +1,24 @@
 {
-  "name": "StudyFlow",
-  "short_name": "StudyFlow",
-  "start_url": "/StudyFlow/",
+  "name": "Study Flow - Student Planner",
+  "short_name": "Planner",
+  "description": "A lightweight planning app for tasks, workload balance, calendar tracking, and companion guidance.",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#0f172a",
   "theme_color": "#4f46e5",
   "icons": [
     {
-      "src": "/StudyFlow/icon-192.png",
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
