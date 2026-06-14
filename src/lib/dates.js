@@ -3,7 +3,6 @@ export function dateKey(value) {
   const d = new Date(value);
   return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12).toISOString().slice(0, 10);
 }
-
 export function todayKey() {
   return dateKey(new Date());
 }
