@@ -1,4 +1,4 @@
-const STORAGE_KEY = "studyflow-lite-mvp-v1";
+const STORAGE_KEY = "studyflow-mvp-v1";
 
 export function loadState() {
   try {
