@@ -14,14 +14,30 @@ function sameDay(a, b) {
   );
 }
 
-export default function CalendarPanel({ tasks, month, setMonth }) {
+function formatKey(date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+export default function CalendarPanel({
+  tasks,
+  month,
+  setMonth,
+  onEditTask,
+  onDeleteTask,
+  onTaskDrop
+}) {
   const firstDay = startOfMonth(month);
   const lastDay = endOfMonth(month);
 
   const days = [];
   const startWeekday = firstDay.getDay();
 
-  for (let i = 0; i < startWeekday; i += 1) days.push(null);
+  // fill leading blanks
+  for (let i = 0; i < startWeekday; i += 1) {
+    days.push(null);
+  }
+
+  // fill month days
   for (let d = 1; d <= lastDay.getDate(); d += 1) {
     days.push(new Date(month.getFullYear(), month.getMonth(), d));
   }
@@ -34,6 +50,23 @@ export default function CalendarPanel({ tasks, month, setMonth }) {
     setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1));
   }
 
+  function handleDragStart(e, task) {
+    e.dataTransfer.setData("taskId", task.id);
+  }
+
+  function handleDrop(e, date) {
+    e.preventDefault();
+
+    const taskId = e.dataTransfer.getData("taskId");
+    if (!taskId || !onTaskDrop) return;
+
+    onTaskDrop(taskId, date.toISOString());
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+  }
+
   return (
     <section className="panel">
       <div className="panel-header">
@@ -43,6 +76,7 @@ export default function CalendarPanel({ tasks, month, setMonth }) {
             year: "numeric"
           })}
         </h2>
+
         <div className="inline-actions">
           <button className="ghost-btn" onClick={goPrevious} type="button">
             ← Prev
@@ -53,6 +87,7 @@ export default function CalendarPanel({ tasks, month, setMonth }) {
         </div>
       </div>
 
+      {/* Weekday labels */}
       <div className="calendar-grid weekday-row">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="calendar-weekday">
@@ -61,9 +96,14 @@ export default function CalendarPanel({ tasks, month, setMonth }) {
         ))}
       </div>
 
+      {/* Calendar grid */}
       <div className="calendar-grid">
         {days.map((date, index) => {
-          if (!date) return <div key={`empty-${index}`} className="calendar-cell empty" />;
+          if (!date) {
+            return (
+              <div key={`empty-${index}`} className="calendar-cell empty" />
+            );
+          }
 
           const items = tasks.filter((task) => {
             if (!task.dueDate) return false;
@@ -71,18 +111,57 @@ export default function CalendarPanel({ tasks, month, setMonth }) {
           });
 
           return (
-            <div key={date.toISOString()} className="calendar-cell">
-              <div className="calendar-date">{date.getDate()}</div>
+            <div
+              key={formatKey(date)}
+              className="calendar-cell"
+              onDrop={(e) => handleDrop(e, date)}
+              onDragOver={handleDragOver}
+            >
+              <div className="calendar-date">
+                {date.getDate()}
+                {items.length > 0 && (
+                  <span className="calendar-count">{items.length}</span>
+                )}
+              </div>
+
               <div className="calendar-items">
-                {items.map((task) => (
+                {items.slice(0, 3).map((task) => (
                   <div
                     key={task.id}
                     className={`calendar-pill priority-${task.priority}`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, task)}
                     title={task.title}
                   >
-                    {task.title}
+                    <span className="pill-title">{task.title}</span>
+
+                    <div className="pill-actions">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEditTask?.(task);
+                        }}
+                      >
+                        ✎
+                      </button>
+
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteTask?.(task);
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                 ))}
+
+                {items.length > 3 && (
+                  <div className="calendar-more">
+                    +{items.length - 3} more
+                  </div>
+                )}
               </div>
             </div>
           );
